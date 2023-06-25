@@ -7,7 +7,8 @@ CREATE TABLE users (
    permission TEXT DEFAULT 'user' CHECK (permission in ('user','admin')),
    lastaccess DATE DEFAULT (datetime('now','localtime')),
    status TEXT NULL,
-   profilepicture TEXT NULL
+   profilepicture TEXT NULL,
+   token TEXT NULL
 );
 
 CREATE TABLE messages (
@@ -19,4 +20,4 @@ CREATE TABLE messages (
 );
 
 INSERT INTO users (email, firstname, lastname, password, permission) values
-('admin@admin', 'Peter', 'Whitehouse', 'admin', 'admin');
+('admin@admin', 'Firstname', 'Lastname', 'admin', 'admin');
