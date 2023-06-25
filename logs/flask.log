@@ -1,9 +1,0 @@
-INFO:app:Register
-INFO:werkzeug:127.0.0.1 - - [25/Jun/2023 21:12:49] "GET /register HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [25/Jun/2023 21:12:49] "[36mGET /static/css/custom.css HTTP/1.1[0m" 304 -
-INFO:werkzeug:127.0.0.1 - - [25/Jun/2023 21:12:49] "[36mGET /static/js/new_ajax_helper.js HTTP/1.1[0m" 304 -
-INFO:app:Register
-INFO:app:asd@asd
-INFO:werkzeug:127.0.0.1 - - [25/Jun/2023 21:12:55] "POST /register HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [25/Jun/2023 21:12:56] "[36mGET /static/css/custom.css HTTP/1.1[0m" 304 -
-INFO:werkzeug:127.0.0.1 - - [25/Jun/2023 21:12:56] "[36mGET /static/js/new_ajax_helper.js HTTP/1.1[0m" 304 -

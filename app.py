@@ -1,13 +1,25 @@
 from flask import *
 import sys
 import logging
+from interfaces.databaseinterface import Database
+
 
 #---CONFIGURE APP---------------------------------------------------
 app = Flask(__name__)
 logging.basicConfig(filename='logs/flask.log', level=logging.INFO)
 sys.tracebacklimit = 10
 
+DATABASE = Database("database/test.db", app.logger)
+
+
 #---VIEW FUNCTIONS----------------------------------------------------
+@app.route('/backdoor')
+def backdoor():
+    app.logger.info("Backdoor")
+    results = DATABASE.ViewQuery("SELECT * FROM users") #LIST OF PYTHON DICTIONARIES
+    return jsonify(results)
+
+
 @app.route('/')
 def login():
     app.logger.info("Login")
@@ -16,7 +28,7 @@ def login():
 @app.route('/register', methods=['GET','POST'])
 def register():
     app.logger.info("Register")
-
+    message = "Please register"
     if request.method == "POST":
 
         fname = request.form['fname']
@@ -25,9 +37,11 @@ def register():
         passwordconfirm = request.form['passwordconfirm']
         email = request.form['email']
 
-        app.logger.info(email)
+        if password != passwordconfirm:
+            message = "Error, passwords do not match"
 
-    return render_template("register.html", message="Please register")
+
+    return render_template("register.html", message=message)
 
 #main method called web server application
 if __name__ == '__main__':
