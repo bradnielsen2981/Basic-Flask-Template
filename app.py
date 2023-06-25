@@ -11,12 +11,12 @@ sys.tracebacklimit = 10
 @app.route('/')
 def login():
     app.logger.info("Login")
-    return "Login"
+    return render_template("login.html", message="Please login")
 
 @app.route('/register')
 def register():
     app.logger.info("Register")
-    return "Register"
+    return render_template("register.html", message="Please register")
 
 #main method called web server application
 if __name__ == '__main__':
