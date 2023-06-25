@@ -10,7 +10,7 @@ sys.tracebacklimit = 10
 #---VIEW FUNCTIONS----------------------------------------------------
 @app.route('/')
 def login():
-    app.logger.info("LOGIN")
+    app.logger.info("Home")
     return "Hello World"
 
 #main method called web server application
