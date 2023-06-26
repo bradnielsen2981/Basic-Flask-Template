@@ -11,14 +11,12 @@ sys.tracebacklimit = 10
 
 DATABASE = Database("database/test.db", app.logger)
 
-
 #---VIEW FUNCTIONS----------------------------------------------------
 @app.route('/backdoor')
 def backdoor():
     app.logger.info("Backdoor")
     results = DATABASE.ViewQuery("SELECT * FROM users") #LIST OF PYTHON DICTIONARIES
     return jsonify(results)
-
 
 @app.route('/')
 def login():
@@ -31,15 +29,21 @@ def register():
     message = "Please register"
     if request.method == "POST":
 
-        fname = request.form['fname']
-        lname = request.form['lname']
+        firstname = request.form['fname']
+        lastname = request.form['lname']
         password = request.form['password']
         passwordconfirm = request.form['passwordconfirm']
         email = request.form['email']
 
         if password != passwordconfirm:
             message = "Error, passwords do not match"
-
+        else:
+            results = DATABASE.ViewQuery("SELECT * FROM users WHERE email = ?", (email,))
+            if results:
+                message = "Error, user already exists"
+            else:
+                DATABASE.ModifyQuery("INSERT INTO users (firstname, lastname, email, password) VALUES (?,?,?,?)", (firstname, lastname, email, password))
+                message = "Success, users has been added"
 
     return render_template("register.html", message=message)
 
