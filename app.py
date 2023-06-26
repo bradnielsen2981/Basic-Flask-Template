@@ -18,10 +18,26 @@ def backdoor():
     results = DATABASE.ViewQuery("SELECT * FROM users") #LIST OF PYTHON DICTIONARIES
     return jsonify(results)
 
-@app.route('/')
+@app.route('/', methods=["GET","POST"])
 def login():
     app.logger.info("Login")
-    return render_template("login.html")
+    message = "Please login"
+    if request.method == "POST":
+        email = request.form['email']
+        password = request.form['password']
+
+        results = DATABASE.ViewQuery("SELECT * FROM users WHERE email = ?", (email,))
+        if results:
+            userdetails = results[0] #row in the user table
+
+            if password == userdetails['password']:
+                message = "Login Successful"
+            else: 
+                message = "Password incorrect"
+        else:
+            message = "User does not exist, email is incorrect!!"
+
+    return render_template("login.html", message=message)
 
 @app.route('/register', methods=['GET','POST'])
 def register():
