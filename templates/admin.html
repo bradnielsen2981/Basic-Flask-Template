@@ -5,6 +5,7 @@
     <p>Welcome {{session['name']}}</p>
 
     {% if results %}
+    <form action="/admin" method="POST">
         <table class="table">
 
             <tr>
@@ -12,6 +13,7 @@
                 {% for columnname in results[0].keys() %}
                     <th>{{columnname}}</th>
                 {% endfor %}
+                    <th>delete ?</th>
             </tr>
 
             {% for row in results %}
@@ -19,9 +21,11 @@
                     {% for cell in row.values() %}
                         <td>{{cell}}</td>
                     {% endfor %}
+                    <td><input type="checkbox" name="selectedusers" value="{{row['userid']}}"></td>
                 </tr>
             {% endfor %}
         </table>
     {% endif %}
-
+        <input type="Submit" value="Delete users">
+    </form>
 {% endblock %}

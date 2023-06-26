@@ -2,7 +2,7 @@ from flask import *
 import sys
 import logging
 from interfaces.databaseinterface import Database
-
+from interfaces.hashing import *
 
 #---CONFIGURE APP---------------------------------------------------
 app = Flask(__name__)
@@ -19,7 +19,7 @@ def backdoor():
     results = DATABASE.ViewQuery("SELECT * FROM users") #LIST OF PYTHON DICTIONARIES
     return jsonify(results)
 
-@app.route('/admin')
+@app.route('/admin', methods=["GET","POST"])
 def admin():
 
     if 'permission' not in session:
@@ -29,6 +29,13 @@ def admin():
             return redirect("./")
 
     results = DATABASE.ViewQuery("SELECT * FROM users")
+
+    if request.method == "POST":
+        selectedusers = request.form.getlist("selectedusers")
+        for userid in selectedusers:
+            if int(userid) != 1:
+                DATABASE.ModifyQuery("DELETE FROM users WHERE userid = ?", (userid,))
+        return redirect("./admin")
 
     app.logger.info("Admin")
     return render_template("admin.html", results=results)
