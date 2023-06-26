@@ -8,6 +8,7 @@ from interfaces.databaseinterface import Database
 app = Flask(__name__)
 logging.basicConfig(filename='logs/flask.log', level=logging.INFO)
 sys.tracebacklimit = 10
+app.config['SECRET_KEY'] = "Type in secret line of text"
 
 DATABASE = Database("database/test.db", app.logger)
 
@@ -17,6 +18,11 @@ def backdoor():
     app.logger.info("Backdoor")
     results = DATABASE.ViewQuery("SELECT * FROM users") #LIST OF PYTHON DICTIONARIES
     return jsonify(results)
+
+@app.route('/home')
+def home():
+    app.logger.info("Home")
+    return render_template("home.html")
 
 @app.route('/', methods=["GET","POST"])
 def login():
@@ -28,10 +34,15 @@ def login():
 
         results = DATABASE.ViewQuery("SELECT * FROM users WHERE email = ?", (email,))
         if results:
-            userdetails = results[0] #row in the user table
-
+            userdetails = results[0] #row in the user table (Python Dictionary)
             if password == userdetails['password']:
                 message = "Login Successful"
+
+                session['permission'] = userdetails['permission']
+                session['userid'] = userdetails['userid']
+                session['name'] = userdetails['firstname'] + " " + userdetails['lastname']
+                
+                return redirect('/home')
             else: 
                 message = "Password incorrect"
         else:
@@ -60,6 +71,7 @@ def register():
             else:
                 DATABASE.ModifyQuery("INSERT INTO users (firstname, lastname, email, password) VALUES (?,?,?,?)", (firstname, lastname, email, password))
                 message = "Success, users has been added"
+                return redirect('./')
 
     return render_template("register.html", message=message)
 
