@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h2>Admin</h2>
+
+    <p>Welcome {{session['name']}}</p>
+
+    {% if results %}
+        <table class="table">
+
+            <tr>
+                <!-- Get all the keys of the first python dictionary as column headings -->
+                {% for columnname in results[0].keys() %}
+                    <th>{{columnname}}</th>
+                {% endfor %}
+            </tr>
+
+            {% for row in results %}
+                <tr>
+                    {% for cell in row.values() %}
+                        <td>{{cell}}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+{% endblock %}

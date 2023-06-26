@@ -19,8 +19,26 @@ def backdoor():
     results = DATABASE.ViewQuery("SELECT * FROM users") #LIST OF PYTHON DICTIONARIES
     return jsonify(results)
 
+@app.route('/admin')
+def admin():
+
+    if 'permission' not in session:
+        return redirect("./")
+    else:
+        if session['permission'] != 'admin':
+            return redirect("./")
+
+    results = DATABASE.ViewQuery("SELECT * FROM users")
+
+    app.logger.info("Admin")
+    return render_template("admin.html", results=results)
+
 @app.route('/home')
 def home():
+
+    if 'userid' not in session:
+        return redirect('./')
+
     app.logger.info("Home")
     return render_template("home.html")
 
@@ -41,8 +59,11 @@ def login():
                 session['permission'] = userdetails['permission']
                 session['userid'] = userdetails['userid']
                 session['name'] = userdetails['firstname'] + " " + userdetails['lastname']
-                
-                return redirect('/home')
+
+                if session['permission'] == 'admin':
+                    return redirect('./admin')
+                else:
+                    return redirect('./home')
             else: 
                 message = "Password incorrect"
         else:
