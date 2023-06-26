@@ -1,0 +1,4 @@
+.usertable td {
+    max-width: 150px;
+    overflow-x: hidden;
+}

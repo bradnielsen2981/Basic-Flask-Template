@@ -6,7 +6,7 @@
 
     {% if results %}
     <form action="/admin" method="POST">
-        <table class="table">
+        <table class="table usertable">
 
             <tr>
                 <!-- Get all the keys of the first python dictionary as column headings -->
@@ -28,4 +28,10 @@
     {% endif %}
         <input type="Submit" value="Delete users">
     </form>
+
+    <br>
+    <form action="/backdoor" method="POST">
+        <input type="Submit" value="Hash passwords">
+    </form>
+
 {% endblock %}

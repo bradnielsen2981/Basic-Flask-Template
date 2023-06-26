@@ -13,10 +13,21 @@ app.config['SECRET_KEY'] = "Type in secret line of text"
 DATABASE = Database("database/test.db", app.logger)
 
 #---VIEW FUNCTIONS----------------------------------------------------
-@app.route('/backdoor')
+@app.route('/backdoor', methods=["GET","POST"])
 def backdoor():
     app.logger.info("Backdoor")
     results = DATABASE.ViewQuery("SELECT * FROM users") #LIST OF PYTHON DICTIONARIES
+
+    '''
+    if request.method == "POST":
+        for row in results:
+            currentpassword = row['password']
+            userid = row['userid']
+            hashedpassword = hash_password(currentpassword)
+            DATABASE.ModifyQuery("UPDATE users SET password=? WHERE userid=?", (hashedpassword, userid))
+        return redirect('./admin')
+    '''
+
     return jsonify(results)
 
 @app.route('/admin', methods=["GET","POST"])
