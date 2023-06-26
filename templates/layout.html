@@ -18,14 +18,22 @@
 
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar navbar-dark bg-primary">
-            <a href="/" class="navbar-brand">A Basic Flask Template</a>
+            <a href="/" class="navbar-brand"> A Basic Flask Template</a>
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse2">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse2">
                 <div class="navbar-nav">
-                    <a href="/" class="nav-item nav-link">Login</a>
-                    <a href="/register" class="nav-item nav-link">Register</a>
+                    <a href="/" class="nav-item nav-link">Home</a>
+                    {% if not session['userid'] %}
+                        <a href="/register" class="nav-item nav-link">Register</a>
+                    {% endif %}
+                    {% if session['permission'] == 'admin' %}
+                        <a href="/admin" class="nav-item nav-link">Admin</a>
+                    {% endif %}
+                    {% if session['userid'] %}
+                        <a href="/logout" class="nav-item nav-link">Logout</a>
+                    {% endif %}
                 </div>
             </div>
         </nav><br>

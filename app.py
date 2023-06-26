@@ -13,22 +13,11 @@ app.config['SECRET_KEY'] = "Type in secret line of text"
 DATABASE = Database("database/test.db", app.logger)
 
 #---VIEW FUNCTIONS----------------------------------------------------
-@app.route('/backdoor', methods=["GET","POST"])
-def backdoor():
-    app.logger.info("Backdoor")
-    results = DATABASE.ViewQuery("SELECT * FROM users") #LIST OF PYTHON DICTIONARIES
-
-    '''
-    if request.method == "POST":
-        for row in results:
-            currentpassword = row['password']
-            userid = row['userid']
-            hashedpassword = hash_password(currentpassword)
-            DATABASE.ModifyQuery("UPDATE users SET password=? WHERE userid=?", (hashedpassword, userid))
-        return redirect('./admin')
-    '''
-
-    return jsonify(results)
+@app.route('/logout')
+def logout():
+    app.logger.info("Log out")
+    session.clear()
+    return redirect('./')
 
 @app.route('/admin', methods=["GET","POST"])
 def admin():
@@ -63,15 +52,23 @@ def home():
 @app.route('/', methods=["GET","POST"])
 def login():
     app.logger.info("Login")
+
+    if 'permission' in session:
+        if session['permission'] == 'admin':
+            return redirect("./admin")
+        else:
+            return redirect("./home")
+
     message = "Please login"
     if request.method == "POST":
         email = request.form['email']
         password = request.form['password']
 
+
         results = DATABASE.ViewQuery("SELECT * FROM users WHERE email = ?", (email,))
         if results:
             userdetails = results[0] #row in the user table (Python Dictionary)
-            if password == userdetails['password']:
+            if check_password(userdetails['password'], password):
                 message = "Login Successful"
 
                 session['permission'] = userdetails['permission']
@@ -108,6 +105,7 @@ def register():
             if results:
                 message = "Error, user already exists"
             else:
+                password = hash_password(password)
                 DATABASE.ModifyQuery("INSERT INTO users (firstname, lastname, email, password) VALUES (?,?,?,?)", (firstname, lastname, email, password))
                 message = "Success, users has been added"
                 return redirect('./')
