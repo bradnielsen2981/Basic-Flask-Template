@@ -1,17 +1,27 @@
 from flask import *
+
 import sys
 import logging
 
 #---CONFIGURE APP---------------------------------------------------
-app = Flask(__name__)
+app = Flask(__name__) #create flask object
+
 logging.basicConfig(filename='logs/flask.log', level=logging.INFO)
 sys.tracebacklimit = 10
 
 #---VIEW FUNCTIONS----------------------------------------------------
 @app.route('/')
 def login():
-    app.logger.info("Home")
-    return "Hello World"
+    app.logger.info("Login")
+    return "<h1>Login</h1>"
+
+@app.route('/register')
+def register():
+    return "Register"
+
+@app.route('/home')
+def home():
+    return "Home"
 
 #main method called web server application
 if __name__ == '__main__':
