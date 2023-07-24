@@ -13,7 +13,7 @@ sys.tracebacklimit = 10
 @app.route('/')
 def login():
     app.logger.info("Login")
-    return "<h1>Login</h1>"
+    return render_template("login.html", message="Please login")
 
 @app.route('/register')
 def register():
