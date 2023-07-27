@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Register</h2>
+<p>{{message}}</p>
+<form action="/register" method="POST">
+    <label>First Name:</label><br>
+    <input type="text" id="firstname" name="firstname" value="" required><br>
+    <label>Last Name:</label><br>
+    <input type="text" id="lastname" name="lastname" value="" required><br>
+  <label>Email:</label><br>
+    <input type="text" id="email" name="email" value="" required><br>
+  <label>Password:</label><br>
+    <input type="password" id="password" name="password" value=""><br>
+  <label>Password Confirm:</label><br>
+  <input type="password" id="passwordconfirm" name="passwordconfirm" value=""><br><br>
+    <input type="submit" value="Submit">
+</form> 
+{% endblock %}

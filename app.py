@@ -10,14 +10,37 @@ logging.basicConfig(filename='logs/flask.log', level=logging.INFO)
 sys.tracebacklimit = 10
 
 #---VIEW FUNCTIONS----------------------------------------------------
-@app.route('/')
+@app.route('/', methods=['GET','POST'])
 def login():
+    error = "Please login"
     app.logger.info("Login")
-    return render_template("login.html", message="Please login")
+    if request.method == "POST":
+        email = request.form['email']
+        password = request.form['password']
+    return render_template("login.html", message=error)
 
-@app.route('/register')
+@app.route('/register', methods=['GET','POST'])
 def register():
-    return "Register"
+    error = "Please register"
+    if request.method == "POST":
+        email = request.form['email']
+        password = request.form['password']
+        passwordconfirm = request.form['passwordconfirm']
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        #check to see password < 8 characters
+        if len(password) < 8:
+            error = "Password is too short"
+            return render_template("register.html", message=error)
+        else:
+            if passwordconfirm != password: #check to see if passwords match
+                error = "Passwords do not match"
+                return render_template("register.html", message=error)
+            else:
+                #flash("Registration successful, please login")
+                return redirect('/')
+    
+    return render_template("register.html", message=error)
 
 @app.route('/home')
 def home():
