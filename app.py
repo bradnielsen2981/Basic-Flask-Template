@@ -1,13 +1,13 @@
 from flask import *
-
+from interfaces import databaseinterface
 import sys
 import logging
 
 #---CONFIGURE APP---------------------------------------------------
 app = Flask(__name__) #create flask object
-
 logging.basicConfig(filename='logs/flask.log', level=logging.INFO)
 sys.tracebacklimit = 10
+
 
 #---VIEW FUNCTIONS----------------------------------------------------
 @app.route('/', methods=['GET','POST'])
@@ -28,6 +28,9 @@ def register():
         passwordconfirm = request.form['passwordconfirm']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
+
+        location = request.form['location']
+
         #check to see password < 8 characters
         if len(password) < 8:
             error = "Password is too short"
