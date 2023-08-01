@@ -1,12 +1,22 @@
 from flask import *
-from interfaces import databaseinterface
+from interfaces.databaseinterface import Database
 import sys
 import logging
+from datetime import datetime
 
 #---CONFIGURE APP---------------------------------------------------
 app = Flask(__name__) #create flask object
 logging.basicConfig(filename='logs/flask.log', level=logging.INFO)
 sys.tracebacklimit = 10
+
+DATABASE = Database("database/test.db", app.logger)
+
+#---VIEW FUNCTIONS----------------------------------------------------
+@app.route('/backdoor')
+def backdoor():
+    app.logger.info("Backdoor")
+    results = DATABASE.ViewQuery("SELECT * FROM users") #LIST OF PYTHON DICTIONARIES
+    return jsonify(results)
 
 
 #---VIEW FUNCTIONS----------------------------------------------------
@@ -40,6 +50,9 @@ def register():
                 error = "Passwords do not match"
                 return render_template("register.html", message=error)
             else:
+                #SUCCESS
+                DATABASE.ModifyQuery("INSERT INTO users (email, password, firstname, lastname, lastaccess) VALUES (?,?,?,?,?)", (email,password,firstname,lastname, datetime.now()) );
+
                 #flash("Registration successful, please login")
                 return redirect('/')
     
