@@ -6,9 +6,11 @@ from datetime import datetime
 
 #---CONFIGURE APP---------------------------------------------------
 app = Flask(__name__) #create flask object
-
 logging.basicConfig(filename='logs/flask.log', level=logging.INFO)
 sys.tracebacklimit = 10
+
+app.config['SECRET_KEY'] = "Type in secret line of text"
+
 
 DATABASE = Database("database/test.db", app.logger)
 
@@ -41,6 +43,9 @@ def login():
                 return render_template("login.html", message=error)
             else:
                 #save session details
+                session['userid'] = user['userid']
+                session['permission'] = user['permission']
+                session['name'] = user['firstname'] + " " + user['lastname']
                 #update their lastaccess
                 return redirect('/home')
     return render_template("login.html", message=error)
