@@ -18,7 +18,6 @@ def backdoor():
     results = DATABASE.ViewQuery("SELECT * FROM users") #LIST OF PYTHON DICTIONARIES
     return jsonify(results)
 
-
 #---VIEW FUNCTIONS----------------------------------------------------
 @app.route('/', methods=['GET','POST'])
 def login():
