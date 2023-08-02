@@ -6,6 +6,7 @@ from datetime import datetime
 
 #---CONFIGURE APP---------------------------------------------------
 app = Flask(__name__) #create flask object
+
 logging.basicConfig(filename='logs/flask.log', level=logging.INFO)
 sys.tracebacklimit = 10
 
@@ -26,6 +27,22 @@ def login():
     if request.method == "POST":
         email = request.form['email']
         password = request.form['password']
+
+        userlist = DATABASE.ViewQuery("SELECT * FROM users WHERE email = ?", (email,))
+
+        if userlist == None:
+            error = "No user exists with that email address"
+            return render_template("login.html", message=error)
+        else:
+            user = userlist[0] #get user details
+            p = user['password']
+            if p != password:
+                error = "Password incorrect!"
+                return render_template("login.html", message=error)
+            else:
+                #save session details
+                #update their lastaccess
+                return redirect('/home')
     return render_template("login.html", message=error)
 
 @app.route('/register', methods=['GET','POST'])
@@ -39,6 +56,8 @@ def register():
         lastname = request.form['lastname']
 
         location = request.form['location']
+
+        #CHECK IF EMAIL EXISTS
 
         #check to see password < 8 characters
         if len(password) < 8:
@@ -59,7 +78,7 @@ def register():
 
 @app.route('/home')
 def home():
-    return "Home"
+    return render_template("home.html")
 
 #main method called web server application
 if __name__ == '__main__':
