@@ -82,7 +82,7 @@ def register():
         emails = DATABASE.ViewQuery("SELECT email FROM users WHERE email = ?",(email,)) 
         if emails:
             error = "User with that email already exists!"
-            return render_template("register.html", message=error)
+            return render_template("register.html", message=error)   
 
         #check to see password < 8 characters
         if len(password) < 8:
