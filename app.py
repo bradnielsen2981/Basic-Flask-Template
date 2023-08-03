@@ -11,7 +11,6 @@ sys.tracebacklimit = 10
 
 app.config['SECRET_KEY'] = "Type in secret line of text"
 
-
 DATABASE = Database("database/test.db", app.logger)
 
 #---VIEW FUNCTIONS----------------------------------------------------
@@ -24,6 +23,10 @@ def backdoor():
 #---VIEW FUNCTIONS----------------------------------------------------
 @app.route('/', methods=['GET','POST'])
 def login():
+
+    if 'userid' in session:
+        return redirect('/home')
+
     error = "Please login"
     app.logger.info("Login")
     if request.method == "POST":
@@ -46,7 +49,11 @@ def login():
                 session['userid'] = user['userid']
                 session['permission'] = user['permission']
                 session['name'] = user['firstname'] + " " + user['lastname']
+
                 #update their lastaccess
+                lastaccess = datetime.now()
+                DATABASE.ModifyQuery("UPDATE users SET lastaccess = ?, WHERE userid = ?", (lastaccess, user['userid']))
+
                 return redirect('/home')
     return render_template("login.html", message=error)
 
@@ -57,6 +64,10 @@ def logout():
 
 @app.route('/register', methods=['GET','POST'])
 def register():
+
+    if 'userid' in session:
+        return redirect('/home')
+
     error = "Please register"
     if request.method == "POST":
         email = request.form['email']
@@ -67,7 +78,11 @@ def register():
 
         location = request.form['location']
 
-        #CHECK IF EMAIL EXISTS
+        #*****C H A L L E N G E******
+        emails = DATABASE.ViewQuery("SELECT email FROM users WHERE email = ?",(email,)) 
+        if emails:
+            error = "User with that email already exists!"
+            return render_template("register.html", message=error)
 
         #check to see password < 8 characters
         if len(password) < 8:
@@ -81,14 +96,25 @@ def register():
                 #SUCCESS
                 DATABASE.ModifyQuery("INSERT INTO users (email, password, firstname, lastname, lastaccess) VALUES (?,?,?,?,?)", (email,password,firstname,lastname, datetime.now()) );
 
-                #flash("Registration successful, please login")
-                return redirect('/')
+                flash("Registration successful, please login") #FIND OUT HOW IT COMES INTO THE PAGE??????
+                return redirect('./')
     
     return render_template("register.html", message=error)
 
 @app.route('/home')
 def home():
+    if 'userid' not in session:
+        return redirect('/')
     return render_template("home.html")
+
+@app.route('/admin')
+def admin():
+    if 'permission' not in session:
+        return redirect('/')
+    else:
+        if session['permission'] != 'admin':
+            return redirect('/')
+    return render_template("admin.html")
 
 #main method called web server application
 if __name__ == '__main__':
