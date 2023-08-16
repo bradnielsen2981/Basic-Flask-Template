@@ -1,14 +1,26 @@
 from flask import *
-import sys
+import sys, os
 import logging
 from interfaces.databaseinterface import Database
 from interfaces.hashing import *
+from werkzeug.utils import secure_filename
 
 #---CONFIGURE APP---------------------------------------------------
 app = Flask(__name__)
 logging.basicConfig(filename='logs/flask.log', level=logging.INFO)
 sys.tracebacklimit = 10
+
+# Configure the upload folder and allowed file extensions
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 app.config['SECRET_KEY'] = "Type in secret line of text"
+
+# Function to check the file extension
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 DATABASE = Database("database/test.db", app.logger)
 
@@ -111,6 +123,45 @@ def register():
                 return redirect('./')
 
     return render_template("register.html", message=message)
+
+
+#FILE UPLOADING
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        # Check if a file is present in the request
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        
+        file = request.files['file']
+        
+        # Check if the file is empty
+        if file.filename == '':
+            flash('No file selected')
+            return redirect(request.url)
+        
+        # Check if the file is allowed and save it
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            flash('File successfully uploaded')
+            return redirect(url_for('upload_file'))
+        else:
+            flash('Allowed file types are png, jpg, jpeg, gif')
+    
+    return 
+
+    ''' TO BE PLACED IN HTML
+    <!doctype html>
+    <title>Upload File</title>
+    <h1>Upload File</h1>
+    <form method="post" action="/upload" enctype="multipart/form-data">
+      <input type="file" name="file">
+      <input type="submit" value="Upload">
+    </form>
+    '''
 
 #main method called web server application
 if __name__ == '__main__':
