@@ -25,13 +25,12 @@
             <div class="collapse navbar-collapse" id="navbarCollapse2">
                 <div class="navbar-nav">
                     <a href="/" class="nav-item nav-link">Home</a>
-                    {% if not session['userid'] %}
+                    {% if 'userid' not in session %}
                         <a href="/register" class="nav-item nav-link">Register</a>
-                    {% endif %}
-                    {% if session['permission'] == 'admin' %}
-                        <a href="/admin" class="nav-item nav-link">Admin</a>
-                    {% endif %}
-                    {% if session['userid'] %}
+                    {% else %}
+                        {% if session['permission'] == 'admin' %}
+                            <a href="/admin" class="nav-item nav-link">Admin</a>
+                        {% endif %}
                         <a href="/logout" class="nav-item nav-link">Logout</a>
                     {% endif %}
                 </div>
