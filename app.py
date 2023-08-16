@@ -114,6 +114,11 @@ def register():
 
     return render_template("register.html", message=message)
 
+    @app.route('/logout', methods=["GET","POST"])
+    def logout():
+        session.clear()
+        return
+
 #main method called web server application
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True) #runs a local server on port 5000

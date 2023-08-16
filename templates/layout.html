@@ -24,8 +24,16 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse2">
                 <div class="navbar-nav">
-                    <a href="/" class="nav-item nav-link">Login</a>
-                    <a href="/register" class="nav-item nav-link">Register</a>
+                    <a href="/" class="nav-item nav-link">Home</a>
+                    {% if 'userid' not in session %}
+                        <a href="/register" class="nav-item nav-link">Register</a>
+                    {% else %}
+                        {% if session['permission'] == 'admin' %}
+                            <a href="/admin" class="nav-item nav-link">Admin</a>
+                        {% endif %}
+                        <a href="/logout" class="nav-item nav-link">Logout</a>
+                    {% endif %}
+
                 </div>
             </div>
         </nav><br>
