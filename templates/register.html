@@ -5,7 +5,7 @@
 
     {{message}}
 
-    <form action="/register" method="POST">
+    <form action="/register" enctype="multipart/form-data" method="POST">
 
         <label for="fname">First name:</label><br>
             <input type="text" id="fname" name="fname" value="" required><br>
@@ -21,6 +21,10 @@
 
         <label for="email">Password Confirm:</label><br>
             <input type="password" id="passwordconfirm" name="passwordconfirm" value="" required><br>
+        <br>
+
+        <label for="profilephoto">Profile Photo:</label><br>
+            <input type="file" name="file">
         <br>
 
         <input type="submit" value="Submit">

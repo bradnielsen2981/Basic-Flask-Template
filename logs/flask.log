@@ -1,19 +1,21 @@
-INFO:werkzeug: * Detected change in "c:\\Users\\BNielsen\\OneDrive - St Joseph's College, Gregory Terrace\\11 Digital Solutions\\python codes\\Basic-Flask-Template\\app.py", reloading
-INFO:werkzeug: * Restarting with stat
-WARNING:werkzeug: * Debugger is active!
-INFO:werkzeug: * Debugger PIN: 954-139-024
-INFO:werkzeug: * Detected change in "c:\\Users\\BNielsen\\OneDrive - St Joseph's College, Gregory Terrace\\11 Digital Solutions\\python codes\\Basic-Flask-Template\\app.py", reloading
-INFO:werkzeug: * Restarting with stat
-WARNING:werkzeug: * Debugger is active!
-INFO:werkzeug: * Debugger PIN: 954-139-024
-INFO:werkzeug: * Detected change in "c:\\Users\\BNielsen\\OneDrive - St Joseph's College, Gregory Terrace\\11 Digital Solutions\\python codes\\Basic-Flask-Template\\app.py", reloading
-INFO:werkzeug: * Restarting with stat
-WARNING:werkzeug: * Debugger is active!
-INFO:werkzeug: * Debugger PIN: 954-139-024
-INFO:werkzeug: * Detected change in "c:\\Users\\BNielsen\\OneDrive - St Joseph's College, Gregory Terrace\\11 Digital Solutions\\python codes\\Basic-Flask-Template\\app.py", reloading
-INFO:werkzeug: * Restarting with stat
-WARNING:werkzeug: * Debugger is active!
-INFO:werkzeug: * Debugger PIN: 954-139-024
+INFO:app:Register
+INFO:werkzeug:127.0.0.1 - - [21/Aug/2023 14:54:21] "GET /register HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [21/Aug/2023 14:54:21] "[36mGET /static/css/custom.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [21/Aug/2023 14:54:21] "[36mGET /static/js/new_ajax_helper.js HTTP/1.1[0m" 304 -
+INFO:app:Register
+INFO:app:ImmutableMultiDict([('file', <FileStorage: 'bartsimpson.JPG' ('image/jpeg')>)])
+INFO:werkzeug:127.0.0.1 - - [21/Aug/2023 14:54:54] "[32mPOST /register HTTP/1.1[0m" 302 -
+INFO:app:Login
+INFO:werkzeug:127.0.0.1 - - [21/Aug/2023 14:54:54] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [21/Aug/2023 14:54:55] "[36mGET /static/css/custom.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [21/Aug/2023 14:54:55] "[36mGET /static/js/new_ajax_helper.js HTTP/1.1[0m" 304 -
+INFO:app:Login
+INFO:werkzeug:127.0.0.1 - - [21/Aug/2023 14:55:07] "[32mPOST / HTTP/1.1[0m" 302 -
+INFO:app:Home
+INFO:werkzeug:127.0.0.1 - - [21/Aug/2023 14:55:08] "GET /home HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [21/Aug/2023 14:55:08] "[36mGET /static/css/custom.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [21/Aug/2023 14:55:08] "[36mGET /static/js/new_ajax_helper.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [21/Aug/2023 14:55:08] "GET /profilephotos/bartsimpson.JPG HTTP/1.1" 200 -
 INFO:werkzeug: * Detected change in "c:\\Users\\BNielsen\\OneDrive - St Joseph's College, Gregory Terrace\\11 Digital Solutions\\python codes\\Basic-Flask-Template\\app.py", reloading
 INFO:werkzeug: * Restarting with stat
 WARNING:werkzeug: * Debugger is active!
