@@ -14,7 +14,6 @@ sys.tracebacklimit = 10
 UPLOAD_FOLDER = 'profilephotos'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 app.config['SECRET_KEY'] = "Type in secret line of text"
 
 # Function to check the file extension

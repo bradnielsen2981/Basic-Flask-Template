@@ -3,8 +3,6 @@
     <h2>Home</h2>
     <p>{{session}}</p>
     <p>Welcome {{session['name']}}</p>
-    <div class="profilephoto">
-        <img src="{{session['profilephoto']}}">
-    </div>
+    {% include "profilephoto.html" %}
 
 {% endblock %}

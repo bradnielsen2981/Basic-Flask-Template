@@ -2,3 +2,10 @@
     max-width: 150px;
     overflow-x: hidden;
 }
+
+.profilephoto
+{
+    width:200px;
+    height:200px;
+    border:1px solid black;
+}
