@@ -1,6 +1,8 @@
 
 {% block profilephoto %}
-<div>
-    <img class="profilephoto square" src="{{session['profilephoto']}}">
-</div>
+{% if session['profilephoto'] %}
+    <div>
+        <img class="profilephoto square" src="{{session['profilephoto']}}" >
+    </div>
+{% endif %}
 {% endblock %}

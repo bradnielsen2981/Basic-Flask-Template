@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-4">
+            {% if eventdetails %}
+            <h1>{{eventdetails['eventname']}}</h2>
+            <h3>at {{eventdetails['eventvenue']}} </h3>
+            <br>
+            <h5>{{eventdetails['eventdatetime']}} </h5>
+            <br>
+            {% endif %}
+            <br>
+            <h2>Add a Song to the Playlist</h2>
+            <form action="/playlist/{{eventdetails['eventid']}}" method="POST">
+                <label for="Song">Song:</label><br>
+                <input type="text" id="songname" name="songname" value="" required><br>
+                <br>
+                <label for="Artist">Artist:</label><br>
+                <input type="text" id="songartist" name="songartist" value="" required><br>
+                <br>
+                <label for="Performer/s">Performer:</label><br>
+                <input type="text" id="songperformer" name="songperformers" value="" required><br>
+                <br>
+                <input type="submit" value="Submit" name="Add"><br><br>
+            </form> 
+        </div>
+        <div class="col-md-8">
+            <h2>Playlist</h2>
+            <h3>{{session['location']}}</h3>
+            {% if results %}
+                <form action="/playlist/{{eventdetails['eventid']}}" method="POST">
+                    <table class="table playlist">
+                        <tr>
+                            <th>Position</th>
+                            <!-- Get all the keys of the first python dictionary as column headings -->
+                            {% for columnname in results[0].keys() %}
+                                <th class="item-{{ loop.index }}">{{columnname}}</th>
+                            {% endfor %}
+                            {% if permission %}
+                                <th>Select</th>
+                            {% endif %}
+                        </tr>
+
+                        {% for row in results %}
+                            <tr>
+                                <td>{{loop.index}}</td>
+                                {% for cell in row.values() %}
+                                    <td class="item-{{ loop.index }}">{{cell}}</td>
+                                {% endfor %}
+                                
+                                {% if permission == 'admin' or permission == 'eventcreator' or row['songcreatorid'] == session['userid'] %}
+                                    <td><input type="checkbox" name="selectedsongs" value="{{row['songid']}}"></td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    {% if permission == "admin" or permission == "eventcreator" %}
+                        <input type="Submit" class="btn_primary" name="Complete" value="Completed">
+                        <br>
+                    {% endif %}
+                    {% if permission != "user" %}
+                        <input type="Submit" class="btn_warning" name="Delete" value="Delete Song">
+                    {% endif %}
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

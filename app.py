@@ -2,6 +2,7 @@ from flask import *
 import sys, os, logging, datetime
 from interfaces.databaseinterface import Database
 from interfaces.hashing import *
+from interfaces.helpers import *
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
@@ -13,8 +14,10 @@ sys.tracebacklimit = 10
 
 # Configure the upload folder and allowed file extensions
 UPLOAD_FOLDER = 'profilephotos'
+QRCODE_FOLDER = 'qrcodes'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['QRCODE_FOLDER'] = QRCODE_FOLDER
 app.config['SECRET_KEY'] = "Type in secret line of text"
 
 # Function to check the file extension
@@ -25,7 +28,6 @@ def allowed_file(filename):
 DATABASE = Database("database/karaoke.db", app.logger)
 
 #use @cross_origin() after @app.route to allow external access 
-
 #---VIEW FUNCTIONS----------------------------------------------------
 @app.route('/logout')
 def logout():
@@ -134,10 +136,7 @@ def register():
                         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                         file.save(filepath)
                         flash("File uploaded successfully")
-                    else:
-                        flash("Problem with file upload")
-                else:
-                    flash("File not found")
+
 
                 password = hash_password(password)
                 DATABASE.ModifyQuery("INSERT INTO users (firstname, lastname, email, password, profilephoto) VALUES (?,?,?,?,?)", (firstname, lastname, email, password,filepath))
@@ -150,53 +149,120 @@ def register():
 @app.route('/events', methods=['GET','POST'])
 def events():
     app.logger.info("Events")
+    current_datetime = datetime.datetime.now()
+    results = DATABASE.ViewQuery("SELECT * FROM events WHERE eventdatetime > ?", (current_datetime,))
+
+    #check if there is permission to delete an event
+    permission = False
+    for result in results:
+        if result['eventcreatorid'] == session['userid'] or session['permission'] == 'admin':
+            permission = True
+
     if request.method == "POST":
-        eventname = request.form['eventname']
-        eventdatetime = request.form['eventdatetime']
-        eventlocationname = request.form['eventlocationname']
-        eventaddress = request.form['eventaddress']
-        eventpostcode = request.form['eventpostcode']
-        eventlongitude = request.form['eventlongitude']
-        eventlatitude = request.form['eventlatitude']
-        eventcreator = session['userid']
-        DATABASE.ModifyQuery("INSERT INTO events (eventname, eventdatetime, eventlocationname, eventaddress, eventpostcode, eventlongitude, eventlatitude, eventcreator) VALUES (?,?,?,?,?,?,?,?)", (eventname, 
-        eventdatetime, eventlocationname, eventaddress, eventpostcode, eventlongitude, eventlatitude, eventcreator))
 
-        #allow deletion of events by the creator
-        selectedevents = request.form.getlist("selectedevents")
-        for eventid in selectedevents:
-            DATABASE.ModifyQuery("DELETE FROM events WHERE eventid = ? AND eventcreator = ?", (eventid,session['userid']))
+        #add an event
+        if "Add" in request.form:
+            eventname = request.form['eventname']
 
-    results = DATABASE.ViewQuery("SELECT * FROM events WHERE eventdatetime > datetime('now') ORDER BY eventdatetime ASC")
-    return render_template("events.html", results=results)
+            #change to datetime
+            eventdate = request.form['eventdate']
+            eventtime = request.form['eventtime']
+            eventdatetime = datetime.datetime.strptime(eventdate + ' ' + eventtime, '%Y-%m-%d %H:%M')
+
+            eventvenue = request.form['eventvenue']
+            eventaddress = request.form['eventaddress']
+            eventpostcode = request.form['eventpostcode']
+
+            #get longitude and latitude if possible
+            eventlongitude = 0
+            eventlatitude = 0
+            eventlatitude, eventlongitude = get_coordinates(eventaddress, eventpostcode)
+
+            DATABASE.ModifyQuery("INSERT INTO events (eventname, eventdatetime, eventvenue, eventaddress, eventpostcode, eventlongitude, eventlatitude, eventcreatorid) VALUES (?,?,?,?,?,?,?,?)", (eventname, 
+            eventdatetime, eventvenue, eventaddress, eventpostcode, eventlongitude, eventlatitude, session['userid']))
+
+            #create a qrcode for the event
+            eventid = DATABASE.ViewQuery("SELECT MAX(eventid) FROM events")[0]['MAX(eventid)']
+            create_qrcode(eventid)
+
+            return redirect(url_for('events'))
+
+        #delete selected events
+        elif "Delete" in request.form:
+            selectedevents = request.form.getlist("selectedevents")
+            for selectedeventid in selectedevents:
+                creatorid = DATABASE.ViewQuery("SELECT eventcreatorid FROM events WHERE eventid = ?", (selectedeventid,))[0]['eventcreatorid']
+                if creatorid == session['userid'] or session['permission'] == 'admin':
+                    DATABASE.ModifyQuery("DELETE FROM events WHERE eventid = ?", (selectedeventid,))
+                    DATABASE.ModifyQuery("DELETE FROM playlist WHERE eventid = ?", (selectedeventid,))
+
+            return redirect(url_for('events'))
+
+    return render_template("events.html", results=results, permission=permission)
 
 #playlist page
 @app.route('/playlist/<eventid>', methods=['GET','POST'])
 def playlist(eventid):
     app.logger.info("Playlist")
+
+    current_datetime = datetime.datetime.now() + datetime.timedelta(hours=5)
+    eventdetails = DATABASE.ViewQuery("SELECT * FROM events WHERE eventid = ? AND eventdatetime > ?", (eventid, current_datetime))
+    if eventdetails == None and session['permission'] != 'admin':
+        return redirect(url_for('events')) #event has passed
+
+    results = DATABASE.ViewQuery("SELECT * FROM playlist WHERE eventid = ? AND songcompleted=0 ORDER BY songsequenceno", (eventid,))
+
+    #check if there is permission to delete an event
+    permission = "user"
+    if session['permission'] == 'admin':
+        permission = "admin"
+    elif eventdetails[0]['eventcreatorid'] == session['userid']:
+        permission = "eventcreator"
+    else:
+        if results:
+            for result in results:
+                if result['songcreatorid'] == session['userid']:
+                    permission = "songcreator"
+
     if request.method == "POST":
-        songname = request.form['songname']
-        artistname = request.form['artistname']
-        performername = request.form['performername']
-        requesteddatetime = datetime.datetime.now()
-        DATABASE.ModifyQuery("INSERT INTO playlist (songname, artistname, performername, requesteddatetime, eventid) VALUES (?,?,?,?,?)", (songname, artistname, performername, requesteddatetime, eventid)
-        return redirect('./playlist/'+eventid)
+        if 'Add' in request.form:
+            songname = request.form['songname']
+            songartist = request.form['songartist']
+            songperformers = request.form['songperformers']
+            songdatetime = datetime.datetime.now()
+            DATABASE.ModifyQuery("INSERT INTO playlist (songname, songartist, songperformers, songdatetime, eventid, songcreatorid) VALUES (?,?,?,?,?,?)", (songname, songartist, songperformers, songdatetime, eventid, session['userid']))
+            DATABASE.ModifyQuery("UPDATE playlist SET songsequenceno = songid WHERE songid = (SELECT MAX(songid) FROM playlist WHERE eventid = ?)", (eventid,))
+       
+        else:
+            if permission:
+                selectedsongids = request.form.getlist("selectedsongs")
+                for songid in selectedsongids:
+                    if 'Delete' in request.form: #allow deletion of events by the creator
+                        DATABASE.ModifyQuery("DELETE FROM playlist WHERE songid = ?", (songid,))
+                    if 'Complete' in request.form: #allow deletion of events by the creator
+                        DATABASE.ModifyQuery("UPDATE playlist SET songcompleted = 1 WHERE songid = ?", (songid,))
 
-        #allow deletion of events by the creator
-        selectedsongids = request.form.getlist("selectedsongs")
-        for songid in selectedsongids:
-            DATABASE.ModifyQuery("DELETE FROM playlist WHERE songid = ? AND eventcreator = ?", (eventid,session['userid']))
+        return redirect(url_for('playlist', eventid=eventid))
 
-    results = DATABASE.ViewQuery("SELECT * FROM playlist WHERE eventid = ? AND current=1", (eventid,))
-    return render_template("playlist.html", results=results, eventid=eventid)
+    return render_template("playlist.html", results=results, permission=permission, eventdetails=eventdetails[0])
 
 #return a profile photo
 @app.route('/profilephotos/<filename>')
-def serve_file(filename):
+def serve_profilephoto(filename):
     if os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], filename)): # Ensure the file exists
         return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
     else:
         abort(404) # If the file does not exist, return a 404 error
+    return
+
+#return a profile photo
+@app.route('/qrcodes/<filename>')
+def serve_qrcode(filename):
+    if os.path.exists(os.path.join(app.config['QRCODE_FOLDER'], filename)): # Ensure the file exists
+        return send_from_directory(app.config['QRCODE_FOLDER'], filename)
+    else:
+        abort(404) # If the file does not exist, return a 404 error
+    return
 
 # Exit the web server
 @app.route('/exit', methods=['GET','POST'])

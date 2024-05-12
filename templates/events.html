@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <h2>Add Karaoke Event</h2>
+        <br>
+        <form action="/events" method="POST">
+            <label for="Event">Event Name:</label><br>
+            <input type="text" id="eventname" name="eventname" value="" required><br>
+            <br>
+            <label for="Event Location">Venue:</label><br>
+            <input type="text" id="eventvenue" name="eventvenue" value="" required><br>
+            <br>
+            <label for="Event Address">Address:</label><br>
+            <input type="text" id="eventaddress" name="eventaddress" value="" required><br>
+            <br>
+            <label for="Event Postcode">Postcode:</label><br>
+            <input type="text" id="eventpostcode" name="eventpostcode" value="" required><br>
+            <br>
+            <label for="Event Date">Date:</label><br>
+            <input type="date" id="eventdate" name="eventdate" value="" required><br>
+            <br>
+            <label for="Event Time">Time:</label><br>
+            <input type="time" id="eventtime" name="eventtime" value="" required><br>
+            <br><br>
+            <input type="submit" value="Add Event" name="Add">
+        </form> 
+    </div>
+    <div class="col-md-8">
+        <h2>Upcoming Events</h2>
+        <br>
+        {% if results %}        
+        <form action="/events" method="POST">
+            <table class="table events">
+            {% for row in results %}
+                <tr>
+                    {% for cell in row.values() %}
+                        <td class="item-{{ loop.index }}">{{cell}}</td>
+                    {% endfor %}
+                    <td><img class="qrcode" src="/qrcodes/karaoke {{row['eventid']}}.png"></td>
+                    <td><input type="button" name="Go" value="Playlist" onclick="open_link({{ row['eventid'] }});" ></td>      
+                    {% if session['permission'] == 'admin' or row['eventcreatorid'] == session['userid'] %}
+                        <td><input type="checkbox" name="selectedevents" value="{{row['eventid']}}"></td>
+                    {% endif %}
+                      
+                </tr>
+            {% endfor %}
+            </table>
+            {% if permission %}
+                <input class="btn_warning" type="Submit" name="Delete" value="Delete Event">
+            {% endif %}
+        </form> 
+        {% endif %}
+        
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    function open_link(eventid)
+    {
+        window.location.href = "/playlist/"+eventid;
+    }
+</script>
+{% endblock %}
+
+
+

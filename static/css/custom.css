@@ -3,9 +3,60 @@
     overflow-x: hidden;
 }
 
+h2 { margin-bottom: 30px; }
+
+.col-md-8
+{
+    background-color: rgb(250, 249, 248);
+    border:3px solid rgb(238, 207, 32);
+    padding:10px;
+}
+
+.bg-primary {
+    --bs-bg-opacity: 1;
+    background-color: rgb(134 39 163) !important;
+}
+
+.events td.item-1, .events td.item-8, .events td.item-9, .events td.item-7 {
+    display:none;
+}
+.events td.item-3
+{
+    min-width:150px;
+}
+.events td.item-4 {
+    min-width:200px;
+}
+
+.playlist td.item-1, .playlist td.item-2, .playlist td.item-3, .playlist td.item-7, .playlist td.item-8, .playlist td.item-9, .playlist td.item-10 {
+    display:none;
+}
+
+.playlist th.item-1, .playlist th.item-2, .playlist th.item-3, .playlist th.item-7, .playlist th.item-8, .playlist th.item-9, .playlist th.item-10 {
+    display:none;
+}
+
+.qrcode
+{
+    width:80px;
+    height:80px;
+}
+
+.home-title
+{
+    margin-left:20px;
+}
+
 .profilephoto
 {
     width:200px;
     height:200px;
     border:1px solid black;
+    float:left;
+    margin:10px;
+}
+
+.container {
+    margin-top:30px;
+    margin-left:30px;
 }
