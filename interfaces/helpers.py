@@ -1,27 +1,50 @@
-from geopy.geocoders import Nominatim
 import hashlib
 import qrcode
 from PIL import Image
+import requests
+
 
 #helper function to get longitude and latitude
 def get_coordinates(address, postcode):
-    geolocator = Nominatim(user_agent="app")  # Replace 'my_app' with your app name
-    location = geolocator.geocode(f"{address}, {postcode}")
-    if location:
-        return location.latitude, location.longitude
-    else:
-        return None, None
+    address = address + " " + postcode
+    base_url = "https://nominatim.openstreetmap.org/search"
+    params = {
+        "q": address,
+        "format": "json",
+        "limit": 1,
+        "addressdetails": 1
+    }
+    longitude = 0; latitude = 0
+    response = requests.get(base_url, params=params)
+    data = response.json()
+    if data:
+        location = data[0]
+        latitude = float(location["lat"])
+        longitude = float(location["lon"])
+
+    print(longitude, latitude)
+    return longitude, latitude
+    
 
 #helper function to get address and postcode from longitude and latitude
 def get_address(latitude, longitude):
-    geolocator = Nominatim(user_agent="app")  # Replace 'my_app' with your app name
-    location = geolocator.reverse((latitude, longitude), exactly_one=True)
-    if location:
-        address = location.address
-        postcode = location.raw.get('address', {}).get('postcode', '')
-        return address, postcode
+    base_url = "https://nominatim.openstreetmap.org/reverse"
+    params = {
+        "lat": latitude,
+        "lon": longitude,
+        "format": "json",
+        "addressdetails": 1
+    }
+
+    response = requests.get(base_url, params=params)
+    data = response.json()
+
+    if data:
+        address = data.get("display_name", "Address not found")
+        return address
     else:
-        return None, None
+        return "Address not found or invalid"
+
     
 #helper function to create a qrcode for the event using the eventvenue and eventdatetime
 def create_qrcode(eventid):

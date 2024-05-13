@@ -1,0 +1,47 @@
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:3000
+ * Running on http://10.0.163.108:3000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 954-139-024
+INFO:werkzeug: * Detected change in "c:\\Users\\BNielsen\\OneDrive - St Joseph's College, Gregory Terrace\\12 Digital Solutions\\Karaoke Server\\Basic-Flask-Template\\interfaces\\helpers.py", reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 954-139-024
+INFO:app:Login
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:09] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:10] "GET /static/css/journal.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:10] "GET /static/css/custom.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:10] "GET /static/js/new_ajax_helper.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:10] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:app:Login
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:16] "[32mPOST / HTTP/1.1[0m" 302 -
+INFO:app:Admin
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:17] "GET /admin HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:17] "[36mGET /static/css/journal.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:17] "[36mGET /static/css/custom.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:17] "[36mGET /static/js/new_ajax_helper.js HTTP/1.1[0m" 304 -
+INFO:app:Events
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:21] "GET /events HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:22] "[36mGET /static/css/journal.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:22] "[36mGET /static/css/custom.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:22] "GET /qrcodes/karaoke%209.png HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:22] "GET /qrcodes/karaoke%2016.png HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:22] "[36mGET /static/js/new_ajax_helper.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:22] "GET /qrcodes/karaoke%2017.png HTTP/1.1" 200 -
+INFO:app:Events
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:38] "[35m[1mPOST /events HTTP/1.1[0m" 500 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:38] "GET /events?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:38] "GET /events?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:38] "GET /events?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [13/May/2024 12:21:38] "[36mGET /events?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+INFO:werkzeug: * Detected change in "c:\\Users\\BNielsen\\OneDrive - St Joseph's College, Gregory Terrace\\12 Digital Solutions\\Karaoke Server\\Basic-Flask-Template\\interfaces\\helpers.py", reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 954-139-024
+INFO:werkzeug: * Detected change in "c:\\Users\\BNielsen\\OneDrive - St Joseph's College, Gregory Terrace\\12 Digital Solutions\\Karaoke Server\\Basic-Flask-Template\\interfaces\\helpers.py", reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 954-139-024
