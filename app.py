@@ -1,6 +1,7 @@
 from flask import *
 import sys
 import logging
+from interfaces.databaseinterface import Database
 
 #---CONFIGURE APP---------------------------------------------------
 app = Flask(__name__)
@@ -8,7 +9,14 @@ logging.basicConfig(filename='logs/flask.log', level=logging.INFO)
 sys.tracebacklimit = 10
 app.config['SECRET_KEY'] = "I am a secret key"
 
+DATABASE = Database("database/test.db", app.logger)
+
 #---VIEW FUNCTIONS----------------------------------------------------
+@app.route('/backdoor')
+def backdoor():
+    results = DATABASE.ViewQuery("SELECT * FROM users")    
+    return jsonify(results)
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     app.logger.info("Login")
@@ -42,7 +50,7 @@ def admin():
     else:
         return redirect('/')
 
-@app.route('/register', method=['GET','POST']) #turn url on to receive data
+@app.route('/register', methods=['GET','POST']) #turn url on to receive data
 def register():
     if request.method == 'POST':
         firstname = request.form['firstname']
