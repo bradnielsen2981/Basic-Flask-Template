@@ -1,1 +1,5 @@
 INFO:werkzeug:127.0.0.1 - - [01/Aug/2024 10:39:34] "GET /backdoor HTTP/1.1" 200 -
+INFO:werkzeug: * Detected change in "c:\\Users\\BNielsen\\OneDrive - St Joseph's College, Gregory Terrace\\11 Digital Solutions\\New folder\\Basic-Flask-Template\\app.py", reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 114-248-678
