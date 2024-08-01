@@ -21,14 +21,15 @@ def backdoor():
 def login():
     app.logger.info("Login")
     if request.method == 'POST': #something has been posted
-
         email = request.form['email'] #python dictionaries
         password = request.form['password']
 
-        if email == 'admin@admin' and password == 'admin':
-            session['username'] = "Mr Nielsen"
-            session['userid'] = 1
-            session['permission'] = "admin" #user or admin
+        results = DATABASE.ViewQuery("SELECT * FROM users WHERE email = ? AND password = ?", (email, password))
+        if results:
+            user = results[0] #Python dictionary
+            session['username'] = user['firstname'] + " " + user['lastname']
+            session['userid'] = user['userid']
+            session['permission'] = user['permission']
             
         app.logger.info("Login Successful")
         return redirect('/home') #TODO
@@ -58,6 +59,12 @@ def register():
         email = request.form['email']
         password = request.form['password']
         passwordconfirm = request.form['passwordconfirm']
+
+        if password != passwordconfirm:
+            return render_template('register.html', message="Passwords do not match")
+        
+        DATABASE.ModifyQuery("INSERT INTO users (firstname, lastname, email, password, permission) VALUES (?, ?, ?, ?, ?)", (firstname, lastname, email, password, 'user'))
+
     app.logger.info("Register")
     return render_template('register.html', message="Please register")
 
