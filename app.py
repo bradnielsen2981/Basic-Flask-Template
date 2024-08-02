@@ -47,7 +47,8 @@ def admin():
     if 'permission' in session:
         if session['permission'] == 'admin': 
             app.logger.info("Admin")
-            return "All hail to the admin!!!"
+            results = DATABASE.ViewQuery("SELECT * FROM users")  
+            return render_template('admin.html', users=results)
     else:
         return redirect('/')
 
@@ -62,9 +63,13 @@ def register():
 
         if password != passwordconfirm:
             return render_template('register.html', message="Passwords do not match")
-        
-        DATABASE.ModifyQuery("INSERT INTO users (firstname, lastname, email, password, permission) VALUES (?, ?, ?, ?, ?)", (firstname, lastname, email, password, 'user'))
 
+        results = DATABASE.ViewQuery("SELECT * FROM users WHERE email = ?", (email,))
+        if results:
+            return render_template('register.html', message="Email already exists")
+
+        DATABASE.ModifyQuery("INSERT INTO users (firstname, lastname, email, password, permission) VALUES (?, ?, ?, ?, ?)", (firstname, lastname, email, password, 'user'))
+        return redirect('/')
     app.logger.info("Register")
     return render_template('register.html', message="Please register")
 
